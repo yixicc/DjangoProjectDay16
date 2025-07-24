@@ -82,7 +82,7 @@ WSGI_APPLICATION = 'DjangoProjectDay16.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'gx_day15',
+        'NAME': 'gx_day16',
         'USER': 'root',
         'PASSWORD': '123456',
         'HOST': 'localhost',
