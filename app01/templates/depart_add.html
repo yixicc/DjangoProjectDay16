@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <form action="/depart/add/" method="post" >
+        {% csrf_token %}
+        <input type="text" placeholder="请输入部门名称" name="departname" maxlength="10">
+        <input type="submit">
+    </form>
+
+</body>
+</html>

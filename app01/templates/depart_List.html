@@ -5,9 +5,26 @@
     <title>Title</title>
 </head>
 <body>
-    {% for item in query_set %}
 
-    {% endfor %}
+    <table>
+        <a href="/depart/add/">新增</a>
+        <thead>
+            <tr>
+                <th>title</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for item in query_set %}
+            <tr>
+                <td>{{ item.title }}</td>
+                <td><a href="/depart/{{ item.id }}/update/">update</a></td>
+                <td><a href="/depart/{{ item.id }}/delete/">delete</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
 
 
 </body>
