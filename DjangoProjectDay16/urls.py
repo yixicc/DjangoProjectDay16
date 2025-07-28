@@ -24,11 +24,11 @@ urlpatterns = [
     path('depart/list/',views.depart_List),
     path('depart/add/',views.depart_add),
     path('depart/<int:nid>/update/',views.depart_update),
-    path('depart/<int:nid>/delete/',views.depart_delete),
+    path('depart/delete/',views.depart_delete),
 
     # 员工管理
     path('user/list/', views.user_List),
     path('user/add/', views.user_add),
     path('user/<int:nid>/update/', views.user_update),
-    path('user/<int:nid>/delete/', views.user_delete),
+    path('user/delete/', views.user_delete),
 ]
