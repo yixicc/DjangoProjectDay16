@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.shortcuts import render, redirect
 
 from app01 import models
@@ -61,23 +63,25 @@ def user_add(request):
     models.UserInfo.objects.create(name=name,password=password,age=age,account=account,creatime=creatime,gender=gender,departname=departname)
     return redirect('/user/list/')
 
+from dateutil.parser import parse
 
 def user_update(request,nid):
     if request.method == 'GET':
         row_object = models.UserInfo.objects.filter(id=nid).first()
-        gender_choices = models.UserInfo.gender_choices,
-        depart_list = models.Department.objects.all(),
-        return render(request,'user_update.html',{"row_object":row_object,"gender_choices":gender_choices,"depart_list":depart_list})
+        departments =  models.Department.objects.values('id', 'title')  # 显式指定字段
+        return render(request,'user_update.html',{"row_object":row_object,"depart_list":list(departments)})
 
     name = request.POST.get("name")
     password = request.POST.get("password")
     age = request.POST.get("age")
     account = request.POST.get("account")
     creatime = request.POST.get("creatime")
+    # 将各种格式的日期转换为标准格式
+    formatted_date = parse(creatime)
     gender = request.POST.get("gender")
-    departname = request.POST.get("departname")
+    depart = request.POST.get("depart")
 
-    models.Department.objects.filter(id=nid).update(name=name,password=password,age=age,account=account,creatime=creatime,gender=gender,departname=departname)
+    models.UserInfo.objects.filter(id=nid).update(name=name,password=password,age=age,account=account,create_time=formatted_date,gender=gender,depart_id=depart)
     return redirect('/user/list/')
 
 def user_delete(request,nid):

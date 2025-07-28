@@ -32,38 +32,26 @@
                         <input type="text" class="form-control" placeholder="创建时间" name="creatime" value="{{ row_object.create_time }}"/>
                     </div>
 
+
                     <div class="form-group">
                         <label>性别</label>
                         <select class="form-control" name="gender">
-                            {% for value, label in gender_choices %}
-                                <option value="{{ value }}" {% if row_object.gender == value %}selected{% endif %}>
-                                    {{ label }}
-                                </option>
-                            {% endfor %}
+                            <option value="1" {% if row_object.gender == 1 %}selected{% endif %}>男</option>
+                            <option value="2" {% if row_object.gender == 2 %}selected{% endif %}>女</option>
                         </select>
                     </div>
-
-                    <!-- 调试信息 -->
-                    <p>Debug: 当前部门 = {{ row_object.depart.title }} (ID: {{ row_object.depart_id }})</p>
-                    <p>Debug: 部门列表 =
-                        {% for dept in depart_list %}
-                            {{ dept.id }}:{{ dept.title }}{% if not forloop.last %}, {% endif %}
-                        {% endfor %}
-                    </p>
 
                     <!-- 部门选择框 -->
                     <div class="form-group">
                         <label>部门</label>
-                        <select class="form-control" name="department">
-                            {% for dept in depart_list %}
-                                <option value="{{ dept.id }}"
-                                    {% if row_object.depart_id == dept.id %}selected{% endif %}>
-                                    {{ dept.title }}
-                                </option>
-                            {% empty %}
-                                <option value="">暂无部门数据</option>
-                            {% endfor %}
-                        </select>
+                        <select class="form-control" name="depart">
+                        {% for dept in depart_list %}
+                            <option value="{{ dept.id }}"
+                                {% if row_object.depart_id == dept.id %}selected{% endif %}>
+                                {{ dept.title }}
+                            </option>
+                        {% endfor %}
+                    </select>
                     </div>
 
                     <button type="submit" class="btn btn-primary">提 交</button>
