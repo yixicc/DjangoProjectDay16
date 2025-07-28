@@ -1,0 +1,74 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+    <div class="container">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"> 修改用户信息 </h3>
+            </div>
+            <div class="panel-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                   <div class="form-group">
+                        <label>姓名</label>
+                        <input type="text" class="form-control" placeholder="姓名" name="name" value="{{ row_object.name }}"/>
+                    </div>
+                    <div class="form-group">
+                        <label>密码</label>
+                        <input type="password" class="form-control" placeholder="密码" name="password" value="{{ row_object.password }}"/>
+                    </div>
+                    <div class="form-group">
+                        <label>年龄</label>
+                        <input type="number" class="form-control" placeholder="年龄" name="age" value="{{ row_object.age }}"/>
+                    </div>
+                    <div class="form-group">
+                        <label>账户</label>
+                        <input type="text" class="form-control" placeholder="账户余额" name="account" value="{{ row_object.account }}"/>
+                    </div>
+                    <div class="form-group">
+                        <label>创建时间</label>
+                        <input type="text" class="form-control" placeholder="创建时间" name="creatime" value="{{ row_object.create_time }}"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label>性别</label>
+                        <select class="form-control" name="gender">
+                            {% for value, label in gender_choices %}
+                                <option value="{{ value }}" {% if row_object.gender == value %}selected{% endif %}>
+                                    {{ label }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- 调试信息 -->
+                    <p>Debug: 当前部门 = {{ row_object.depart.title }} (ID: {{ row_object.depart_id }})</p>
+                    <p>Debug: 部门列表 =
+                        {% for dept in depart_list %}
+                            {{ dept.id }}:{{ dept.title }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </p>
+
+                    <!-- 部门选择框 -->
+                    <div class="form-group">
+                        <label>部门</label>
+                        <select class="form-control" name="department">
+                            {% for dept in depart_list %}
+                                <option value="{{ dept.id }}"
+                                    {% if row_object.depart_id == dept.id %}selected{% endif %}>
+                                    {{ dept.title }}
+                                </option>
+                            {% empty %}
+                                <option value="">暂无部门数据</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">提 交</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

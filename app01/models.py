@@ -5,6 +5,9 @@ from django.db import models
 class Department(models.Model):
     title = models.CharField(max_length=120,verbose_name="部门名称")
 
+    def __str__(self):
+        return self.title
+
 class UserInfo(models.Model):
     name = models.CharField(max_length=20,verbose_name="姓名")
     password = models.CharField(max_length=120,verbose_name="密码")
