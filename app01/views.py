@@ -118,7 +118,6 @@ class MyForm(forms.Form):
 def user_add_form(request):
     if request.method == 'GET':
         form = MyForm()
-
         return render(request,'user_add_form.html', {"form":form})
 
     name = request.POST.get("name")
@@ -162,3 +161,20 @@ def user_add_modelform(request):
         return redirect('/user/list/')
     # 校验失败（在页面上显示错误信息）
     return render(request, 'user_add_modelform.html', {"form": form})
+
+def user_edit(request,nid):
+    row_object = models.UserInfo.objects.filter(id=nid).first()
+
+    if request.method == 'GET':
+        # 使用实例数据初始化表单（用于回显）
+        form = MyModelForm(instance=row_object)
+        return render(request, 'user_edit.html', {"form": form, "nid": nid})
+
+    form = MyModelForm(data=request.POST, instance=row_object)
+    if form.is_valid():
+        # 验证通过，保存表单数据
+        form.save()
+        return redirect('/user/list/')
+    else:
+        # 验证失败，重新显示表单（带错误信息）
+        return render(request, 'user_edit.html', {"form": form, "nid": nid})
