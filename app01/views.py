@@ -132,3 +132,35 @@ def user_add_form(request):
     models.UserInfo.objects.create(name=name,password=password,age=age,account=account,create_time=creatime,gender=gender,depart_id=depart)
     return redirect('/user/list/')
 
+
+########################################################################
+
+
+class MyModelForm(forms.ModelForm):
+    class Meta:
+        model = models.UserInfo
+        fields = ('name', 'password', 'age', 'account', 'create_time', 'gender', 'depart')
+        # widgets = {
+        #     "name": forms.TextInput(attrs={'class':'form-control'}),
+        # }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for name, field in self.fields.items():
+            field.widget.attrs = {'class': 'form-control', "placeholder": field.label}
+
+def user_add_modelform(request):
+    if request.method == 'GET':
+        form = MyModelForm()
+        return render(request,'user_add_modelform.html', {"form":form})
+
+    name = request.POST.get("name")
+    password = request.POST.get("password")
+    age = request.POST.get("age")
+    account = request.POST.get("account")
+    create_time = request.POST.get("create_time")
+    gender = request.POST.get("gender")
+    depart = request.POST.get("depart")
+
+    models.UserInfo.objects.create(name=name,password=password,age=age,account=account,create_time=create_time,gender=gender,depart_id=depart)
+    return redirect('/user/list/')

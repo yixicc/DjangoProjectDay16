@@ -30,6 +30,7 @@ urlpatterns = [
     path('user/list/', views.user_List),
     path('user/add/', views.user_add),
     path('user/add/form', views.user_add_form),
+    path('user/add/modelform', views.user_add_modelform),
     path('user/<int:nid>/update/', views.user_update),
     path('user/delete/', views.user_delete),
 
