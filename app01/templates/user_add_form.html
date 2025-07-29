@@ -1,0 +1,51 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <div class="container">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"> 新建用户 </h3>
+            </div>
+            <div class="panel-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        {{ form.name.label_tag }}
+                        {{ form.name }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.password.label_tag }}
+                        {{ form.password }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.age.label_tag }}
+                        {{ form.age }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.account.label_tag }}
+                        {{ form.account }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.creatime.label_tag }}
+                        {{ form.creatime }}
+                    </div>
+
+                    <!-- 性别字段 -->
+                    <div class="form-group">
+                        {{ form.gender.label_tag }}
+                        {{ form.gender }}
+                    </div>
+
+                    <!-- 部门字段 -->
+                    <div class="form-group">
+                        {{ form.depart.label_tag }}
+                        {{ form.depart }}
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">提 交</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

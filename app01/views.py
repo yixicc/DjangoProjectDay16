@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from django.shortcuts import render, redirect
-
+from dateutil.parser import parse
 from app01 import models
 
 
@@ -52,7 +52,7 @@ def user_List(request):
 def user_add(request):
     if request.method == 'GET':
         gender_choices = models.UserInfo.gender_choices
-        depart_list =  models.Department.objects.values('id', 'title')  # 显式指定字段
+        depart_list =  models.Department.objects.all()
         return render(request,'user_add.html', {"gender_choices":gender_choices,"depart_list":depart_list})
 
     name = request.POST.get("name")
@@ -66,7 +66,6 @@ def user_add(request):
     models.UserInfo.objects.create(name=name,password=password,age=age,account=account,create_time=creatime,gender=gender,depart_id=depart)
     return redirect('/user/list/')
 
-from dateutil.parser import parse
 
 def user_update(request,nid):
     if request.method == 'GET':
@@ -90,5 +89,46 @@ def user_update(request,nid):
 def user_delete(request):
     nid = request.GET.get('nid')
     models.UserInfo.objects.filter(id=nid).delete()
+    return redirect('/user/list/')
+
+from django import forms
+
+class MyForm(forms.Form):
+    name = forms.CharField(label='name',widget = forms.TextInput(attrs={'class':'form-control'}))
+    password = forms.CharField(label='password',widget=forms.TextInput(attrs={'class':'form-control'}))
+    age = forms.CharField(label='age',widget=forms.TextInput(attrs={'class':'form-control'}))
+    account = forms.CharField(label='account',widget=forms.TextInput(attrs={'class':'form-control'}))
+    creatime = forms.CharField(label='creatime',widget=forms.TextInput(attrs={'class':'form-control'}))
+    # 性别字段
+    gender_choices = models.UserInfo.gender_choices
+    gender = forms.ChoiceField(
+        label='性别',
+        choices=gender_choices,
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+
+    # 部门字段
+    depart = forms.ModelChoiceField(
+        label='部门',
+        queryset=models.Department.objects.all(),  # 获取所有部门
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+
+
+def user_add_form(request):
+    if request.method == 'GET':
+        form = MyForm()
+
+        return render(request,'user_add_form.html', {"form":form})
+
+    name = request.POST.get("name")
+    password = request.POST.get("password")
+    age = request.POST.get("age")
+    account = request.POST.get("account")
+    creatime = request.POST.get("creatime")
+    gender = request.POST.get("gender")
+    depart = request.POST.get("depart")
+
+    models.UserInfo.objects.create(name=name,password=password,age=age,account=account,create_time=creatime,gender=gender,depart_id=depart)
     return redirect('/user/list/')
 
