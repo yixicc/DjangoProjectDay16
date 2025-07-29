@@ -13,8 +13,9 @@
 
                     {% for foo in form %}
                     	<div class="form-group">
-                            {{ foo.label }}
+                            <label>{{ foo.label }}</label>
                             {{ foo }}
+                            {{ foo.errors }}
                         </div>
                     {% endfor %}
 

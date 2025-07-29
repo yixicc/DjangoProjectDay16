@@ -154,13 +154,11 @@ def user_add_modelform(request):
         form = MyModelForm()
         return render(request,'user_add_modelform.html', {"form":form})
 
-    name = request.POST.get("name")
-    password = request.POST.get("password")
-    age = request.POST.get("age")
-    account = request.POST.get("account")
-    create_time = request.POST.get("create_time")
-    gender = request.POST.get("gender")
-    depart = request.POST.get("depart")
-
-    models.UserInfo.objects.create(name=name,password=password,age=age,account=account,create_time=create_time,gender=gender,depart_id=depart)
-    return redirect('/user/list/')
+    form = MyModelForm(data = request.POST)
+    if form.is_valid():
+        print('-----------------')
+        print(form.cleaned_data)
+        form.save()
+        return redirect('/user/list/')
+    # 校验失败（在页面上显示错误信息）
+    return render(request, 'user_add_modelform.html', {"form": form})
