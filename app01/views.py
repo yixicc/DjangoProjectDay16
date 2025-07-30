@@ -203,6 +203,9 @@ class PrettyNumModelForm(forms.ModelForm):
     #验证方式二：基于钩子方法
     def clean_mobile(self):
         txt_mobile = self.cleaned_data['mobile']
+        exists = models.PrettyNum.objects.filter(mobile=txt_mobile).exists()
+        if exists:
+            raise forms.ValidationError("手机号已存在")
         if len(txt_mobile) != 11:
             raise forms.ValidationError("格式错误")
         return txt_mobile
@@ -226,14 +229,37 @@ def prettynum_add(request):
         return render(request, 'prettynum_add.html', {"form": form})
 
 
+class PrettyNumEditModelForm(forms.ModelForm):
+
+    # mobile = forms.CharField(label='手机号',disabled=True)
+
+    class Meta:
+        model = models.PrettyNum
+        fields = ('mobile','price','level','status')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for name, field in self.fields.items():
+            field.widget.attrs = {'class': 'form-control', "placeholder": field.label}
+
+    #验证方式二：基于钩子方法
+    def clean_mobile(self):
+        txt_mobile = self.cleaned_data['mobile']
+        exists = models.PrettyNum.objects.exclude(id=self.instance.pk).filter(mobile=txt_mobile).exists()
+        if exists:
+            raise forms.ValidationError("手机号已存在")
+        if len(txt_mobile) != 11:
+            raise forms.ValidationError("格式错误")
+        return txt_mobile
+
 def prettynum_edit(request,nid):
     row_object = models.PrettyNum.objects.filter(id=nid).first()
 
     if request.method == 'GET':
-        form = PrettyNumModelForm(instance=row_object)
+        form = PrettyNumEditModelForm(instance=row_object)
         return render(request, 'prettynum_edit.html', {"form": form, "nid": nid})
 
-    form = PrettyNumModelForm(data=request.POST, instance=row_object)
+    form = PrettyNumEditModelForm(data=request.POST, instance=row_object)
     if form.is_valid():
         form.save()
         return redirect('/prettynum/list/')
