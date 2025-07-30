@@ -22,3 +22,19 @@ class UserInfo(models.Model):
         (2,"女")
     )
     gender = models.IntegerField(verbose_name="性别",choices=gender_choices, default=1)
+
+class PrettyNum(models.Model):
+    mobile = models.CharField(max_length=20,verbose_name="号码")
+    price = models.DecimalField(verbose_name="价格",max_digits=10,decimal_places=2,default=0)
+    level_choices = (
+        (1, "1级"),
+        (2, "2级"),
+        (3, "3级"),
+        (4, "4级")
+    )
+    level = models.IntegerField(verbose_name="级别",choices=level_choices, default=1)
+    status_choices = (
+        (1,"未占用"),
+        (2,"已占用")
+    )
+    status = models.IntegerField(verbose_name="占用状态",choices=status_choices, default=1)

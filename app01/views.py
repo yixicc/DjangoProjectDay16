@@ -178,3 +178,30 @@ def user_edit(request,nid):
     else:
         # 验证失败，重新显示表单（带错误信息）
         return render(request, 'user_edit.html', {"form": form, "nid": nid})
+
+
+########################################################################
+
+class PrettyNumModelForm(forms.Form):
+    class Meta:
+        model = models.PrettyNum
+        fields = ('number','price','level','status')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for name, field in self.fields.items():
+            field.widget.attrs = {'class': 'form-control', "placeholder": field.label}
+
+def prettynum_list(request):
+    '''数据库中获取所有的靓号列表'''
+    query_set = models.PrettyNum.objects.all()
+    return render(request,'prettynum_list.html',{'query_set':query_set})
+
+def prettynum_add(request):
+    pass
+
+def prettynum_edit(request):
+    pass
+
+def prettynum_delete(request):
+    pass
