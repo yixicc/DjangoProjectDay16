@@ -59,11 +59,11 @@ def user_add(request):
     password = request.POST.get("password")
     age = request.POST.get("age")
     account = request.POST.get("account")
-    creatime = request.POST.get("creatime")
+    create_time = request.POST.get("create_time")
     gender = request.POST.get("gender")
     depart = request.POST.get("depart")
 
-    models.UserInfo.objects.create(name=name,password=password,age=age,account=account,create_time=creatime,gender=gender,depart_id=depart)
+    models.UserInfo.objects.create(name=name,password=password,age=age,account=account,create_time=create_time,gender=gender,depart_id=depart)
     return redirect('/user/list/')
 
 
@@ -182,10 +182,10 @@ def user_edit(request,nid):
 
 ########################################################################
 
-class PrettyNumModelForm(forms.Form):
+class PrettyNumModelForm(forms.ModelForm):
     class Meta:
         model = models.PrettyNum
-        fields = ('number','price','level','status')
+        fields = ('mobile','price','level','status')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -198,10 +198,35 @@ def prettynum_list(request):
     return render(request,'prettynum_list.html',{'query_set':query_set})
 
 def prettynum_add(request):
-    pass
+    if request.method == 'GET':
+        form = PrettyNumModelForm()
+        return render(request,'prettynum_add.html', {"form":form})
 
-def prettynum_edit(request):
-    pass
+    form = PrettyNumModelForm(data = request.POST)
+    if form.is_valid():
+        form.save()
+        return redirect('/prettynum/list/')
+    else:
+        return render(request, 'prettynum_add.html', {"form": form})
+
+
+def prettynum_edit(request,nid):
+    row_object = models.PrettyNum.objects.filter(id=nid).first()
+
+    if request.method == 'GET':
+        form = PrettyNumModelForm(instance=row_object)
+        return render(request, 'prettynum_edit.html', {"form": form, "nid": nid})
+
+    form = PrettyNumModelForm(data=request.POST, instance=row_object)
+    if form.is_valid():
+        form.save()
+        return redirect('/prettynum/list/')
+    else:
+        return render(request, 'prettynum_edit.html', {"form": form, "nid": nid})
+
+
 
 def prettynum_delete(request):
-    pass
+    nid = request.GET.get('nid')
+    models.PrettyNum.objects.filter(id=nid).delete()
+    return redirect('/prettynum/list/')

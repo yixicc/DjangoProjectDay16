@@ -38,7 +38,7 @@ urlpatterns = [
     # 靓号管理
     path('prettynum/list/', views.prettynum_list),
     path('prettynum/add/', views.prettynum_add),
-    path('prettynum/edit/', views.prettynum_edit),
+    path('prettynum/<int:nid>/edit/', views.prettynum_edit),
     path('prettynum/delete/', views.prettynum_delete),
 
 ]

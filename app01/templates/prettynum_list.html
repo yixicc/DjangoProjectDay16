@@ -32,8 +32,8 @@
                         <th>{{ obj.id }}</th>
                         <td>{{ obj.mobile }}</td>
                         <td>{{ obj.price }}</td>
-                        <td>{{ obj.level }}</td>
-                        <td>{{ obj.status }}</td>
+                        <td>{{ obj.get_level_display }}</td>
+                        <td>{{ obj.get_status_display }}</td>
                         <td>
                             <a class="btn btn-primary btn-xs" href="/prettynum/{{ obj.id }}/edit/">编辑</a>
                             <a class="btn btn-danger btn-xs" href="/prettynum/delete?nid={{ obj.id }}">删除</a>
