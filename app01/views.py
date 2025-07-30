@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from django.core.validators import RegexValidator
 from django.shortcuts import render, redirect
 from dateutil.parser import parse
 from app01 import models
@@ -183,18 +184,33 @@ def user_edit(request,nid):
 ########################################################################
 
 class PrettyNumModelForm(forms.ModelForm):
+    # # 验证方式一：基于正则表达式
+    # mobile = forms.CharField(
+    #     label='mobile',
+    #     validators=[RegexValidator(r'^1[3-9]\d{9}$',"手机号格式错误")],
+    # )
+
     class Meta:
         model = models.PrettyNum
-        fields = ('mobile','price','level','status')
+        fields = "__all__"
+        # fields = ('mobile','price','level','status')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for name, field in self.fields.items():
             field.widget.attrs = {'class': 'form-control', "placeholder": field.label}
 
+    #验证方式二：基于钩子方法
+    def clean_mobile(self):
+        txt_mobile = self.cleaned_data['mobile']
+        if len(txt_mobile) != 11:
+            raise forms.ValidationError("格式错误")
+        return txt_mobile
+
+
 def prettynum_list(request):
     '''数据库中获取所有的靓号列表'''
-    query_set = models.PrettyNum.objects.all()
+    query_set = models.PrettyNum.objects.all().order_by("-level")
     return render(request,'prettynum_list.html',{'query_set':query_set})
 
 def prettynum_add(request):
