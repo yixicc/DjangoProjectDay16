@@ -212,15 +212,14 @@ class PrettyNumModelForm(forms.ModelForm):
 
 
 def prettynum_list(request):
-    search_word = ''
-    if request.method == 'GET':
-        search_word = request.GET.get('q')
-        query_set = models.PrettyNum.objects.filter(mobile=search_word).order_by("-level")
+    search_dict = {}
+    search_word = request.GET.get('q')
+    if search_word:
+        search_dict["mobile__contains"] = search_word
 
     '''数据库中获取所有的靓号列表'''
-    # query_set = models.PrettyNum.objects.all().order_by("-level")
-    query_set = models.PrettyNum.objects.filter(mobile=search_word).order_by("-level")
-    return render(request,'prettynum_list.html',{'query_set':query_set})
+    query_set = models.PrettyNum.objects.filter(**search_dict).order_by("-level")
+    return render(request,'prettynum_list.html',{'query_set':query_set,'search_value':search_word})
 
 def prettynum_add(request):
     if request.method == 'GET':
