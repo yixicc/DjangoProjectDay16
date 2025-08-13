@@ -16,7 +16,9 @@ Including another URLconf
 """
 
 from django.urls import path
-from app01.views import depart,user,prettynum
+
+from app01.views import depart, user, prettynum, admin
+
 urlpatterns = [
 
     # 部门管理
@@ -40,5 +42,8 @@ urlpatterns = [
     path('prettynum/add/', prettynum.prettynum_add),
     path('prettynum/<int:nid>/edit/', prettynum.prettynum_edit),
     path('prettynum/delete/', prettynum.prettynum_delete),
+
+    # 管理员管理
+    path('admin/list/', admin.admin_List),
 
 ]
