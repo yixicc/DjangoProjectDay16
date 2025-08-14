@@ -3,10 +3,14 @@
 # @Author : zhou
 # @File : form.py
 # @Software: PyCharm
-
+from django.core.exceptions import ValidationError
 
 from app01 import models
 from django import forms
+
+from app01.utils.bootstrap import BootStrapModelForm
+from app01.utils.encrypt import md5
+
 
 class MyForm(forms.Form):
     name = forms.CharField(label='name',widget = forms.TextInput(attrs={'class':'form-control'}))
@@ -94,3 +98,36 @@ class PrettyNumEditModelForm(forms.ModelForm):
         if len(txt_mobile) != 11:
             raise forms.ValidationError("格式错误")
         return txt_mobile
+
+
+class AdminModelForm(BootStrapModelForm):
+
+    confirm_password = forms.CharField(
+        label='确认密码',
+        disabled=False,
+        widget=forms.PasswordInput(render_value=True)
+    )
+
+    class Meta:
+        model = models.Admin
+        fields = ('username','password','confirm_password')
+        widgets = {
+            'password': forms.PasswordInput(render_value=True),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for name, field in self.fields.items():
+            field.widget.attrs = {'class': 'form-control', "placeholder": field.label}
+
+    def clean_password(self):
+        password = self.cleaned_data['password']
+        return md5(password)
+
+    def clean_confirm_password(self):
+        password = self.cleaned_data['password']
+        print("password 是：",password)
+        confirm_password = md5(self.cleaned_data['confirm_password'])
+        if password != confirm_password:
+            raise ValidationError("密码不一致")
+        return confirm_password

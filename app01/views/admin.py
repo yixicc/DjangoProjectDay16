@@ -3,9 +3,11 @@
 # @Author : zhou
 # @File : admin.py
 # @Software: PyCharm
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.template.defaultfilters import title
 
 from app01 import models
+from app01.utils.form import AdminModelForm
 from app01.utils.pagination import Pagination
 
 
@@ -27,3 +29,17 @@ def admin_List(request):
     }
 
     return render(request,'admin_list.html',{'context':context})
+
+
+def admin_add(request):
+    if request.method == 'GET':
+        form = AdminModelForm()
+        return render(request,'add.html', {"form":form,title:'新建管理员'})
+
+    form = AdminModelForm(data = request.POST)
+    if form.is_valid():
+        print(form.cleaned_data)
+        form.save()
+        return redirect('/admin/list/')
+    else:
+        return render(request, 'add.html', {"form": form})
