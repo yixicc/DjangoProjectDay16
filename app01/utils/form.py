@@ -131,3 +131,14 @@ class AdminModelForm(BootStrapModelForm):
         if password != confirm_password:
             raise ValidationError("密码不一致")
         return confirm_password
+
+
+class AdminEditModelForm(BootStrapModelForm):
+    class Meta:
+        model = models.Admin
+        fields = ('username',)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for name, field in self.fields.items():
+            field.widget.attrs = {'class': 'form-control', "placeholder": field.label}

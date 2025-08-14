@@ -7,7 +7,7 @@ from django.shortcuts import render, redirect
 from django.template.defaultfilters import title
 
 from app01 import models
-from app01.utils.form import AdminModelForm
+from app01.utils.form import AdminModelForm, AdminEditModelForm
 from app01.utils.pagination import Pagination
 
 
@@ -38,8 +38,27 @@ def admin_add(request):
 
     form = AdminModelForm(data = request.POST)
     if form.is_valid():
-        print(form.cleaned_data)
         form.save()
         return redirect('/admin/list/')
     else:
         return render(request, 'add.html', {"form": form})
+
+
+def admin_edit(request, nid):
+
+    row_object = models.Admin.objects.filter(id=nid).first()
+    if not row_object:
+        # return render(request,'error.html',{"msg":"数据不存在"})
+        return redirect('/admin/list/')
+
+    title = '编辑管理员'
+
+    if request.method == 'GET':
+        form = AdminEditModelForm(instance=row_object)
+        return render(request,'add.html', {"form":form,"title":title})
+
+    form = AdminEditModelForm(data = request.POST, instance=row_object)
+    if form.is_valid():
+        form.save()
+        return redirect('/admin/list/')
+    return render(request, 'add.html', {"form":form,"title":title})
