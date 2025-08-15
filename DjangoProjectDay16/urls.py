@@ -18,6 +18,7 @@ Including another URLconf
 from django.urls import path
 
 from app01.views import depart, user, prettynum, admin
+from app01.views.account import account_login
 
 urlpatterns = [
 
@@ -48,5 +49,9 @@ urlpatterns = [
     path('admin/add/', admin.admin_add),
     path('admin/<int:nid>/edit/', admin.admin_edit),
     path('admin/delete/', admin.admin_delete),
+    path('admin/reset/', admin.admin_reset),
+
+    #登录
+    path('login/', account_login),
 
 ]

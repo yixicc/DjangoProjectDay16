@@ -15,7 +15,7 @@
                     	<div class="form-group">
                             <label>{{ foo.label }}</label>
                             {{ foo }}
-                            {{ foo.errors }}
+                            <span style="color:red">{{ foo.errors.0 }}</span>
                         </div>
                     {% endfor %}
 

@@ -3,6 +3,8 @@
 # @Author : zhou
 # @File : form.py
 # @Software: PyCharm
+from os.path import exists
+
 from django.core.exceptions import ValidationError
 
 from app01 import models
@@ -142,3 +144,40 @@ class AdminEditModelForm(BootStrapModelForm):
         super().__init__(*args, **kwargs)
         for name, field in self.fields.items():
             field.widget.attrs = {'class': 'form-control', "placeholder": field.label}
+
+class AdminResetModelForm(BootStrapModelForm):
+
+    confirm_password = forms.CharField(
+        label='确认密码',
+        disabled=False,
+        widget=forms.PasswordInput(render_value=True)
+    )
+
+    class Meta:
+        model = models.Admin
+        fields = ('password','confirm_password',)
+        widgets = {
+            'password': forms.PasswordInput(render_value=True),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for name, field in self.fields.items():
+            field.widget.attrs = {'class': 'form-control', "placeholder": field.label}
+
+    def clean_password(self):
+        password = self.cleaned_data['password']
+        md5_password = md5(password)
+        # 和数据库中的密码比较，不能相同
+        exists = models.Admin.objects.filter(id = self.instance.pk,password=md5_password).exists()
+        if exists:
+            raise forms.ValidationError("新密码不能和之前的密码相同")
+        return md5_password
+
+    def clean_confirm_password(self):
+        password = self.cleaned_data.get('password')
+        print("pwd是：",password)
+        confirm_password = md5(self.cleaned_data['confirm_password'])
+        if password != confirm_password:
+            raise forms.ValidationError("密码不一致")
+        return confirm_password

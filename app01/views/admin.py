@@ -7,7 +7,7 @@ from django.shortcuts import render, redirect
 from django.template.defaultfilters import title
 
 from app01 import models
-from app01.utils.form import AdminModelForm, AdminEditModelForm
+from app01.utils.form import AdminModelForm, AdminEditModelForm, AdminResetModelForm
 from app01.utils.pagination import Pagination
 
 
@@ -67,3 +67,21 @@ def admin_delete(request):
     nid = request.GET.get('nid')
     models.Admin.objects.filter(id=nid).delete()
     return redirect('/admin/list/')
+
+def admin_reset(request):
+    nid = request.GET.get('nid')
+    row_object = models.Admin.objects.filter(id=nid).first()
+    if not row_object:
+        return redirect('/admin/list/')
+
+    title = '重置密码'
+
+    if request.method == 'GET':
+        form = AdminResetModelForm(instance=row_object)
+        return render(request,'add.html', {"form":form,"title":title})
+
+    form = AdminResetModelForm(data = request.POST, instance=row_object)
+    if form.is_valid():
+        form.save()
+        return redirect('/admin/list/')
+    return render(request, 'add.html', {"form":form,"title":title})
