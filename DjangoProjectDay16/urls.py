@@ -17,8 +17,7 @@ Including another URLconf
 
 from django.urls import path
 
-from app01.views import depart, user, prettynum, admin
-from app01.views.account import account_login
+from app01.views import depart, user, prettynum, admin,account,task
 
 urlpatterns = [
 
@@ -52,6 +51,11 @@ urlpatterns = [
     path('admin/reset/', admin.admin_reset),
 
     #登录
-    path('login/', account_login),
+    path('login/', account.account_login),
+    path('loginout/', account.account_logout),
+    path('image/code/', account.image_code),
+
+    path('task/list/',task.task_list),
+    path('task/ajax/',task.task_ajax),
 
 ]

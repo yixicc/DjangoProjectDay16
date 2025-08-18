@@ -13,7 +13,7 @@ class AuthMiddleware(MiddlewareMixin):
 
     def process_request(self, request):
 
-        if request.path_info == '/login/':
+        if request.path_info in ['/login/','/image/code/']:
             return
 
         # 如果方法无返回值，则继续往后走

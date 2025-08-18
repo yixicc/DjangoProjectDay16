@@ -6,11 +6,14 @@
 from cProfile import label
 
 from django import forms
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
 from app01 import models
 from app01.utils.bootstrap import BootStrapForm
+from app01.utils.code import check_code
 from app01.utils.encrypt import md5
+from io import BytesIO
 
 
 class LoginView(BootStrapForm):
@@ -24,6 +27,12 @@ class LoginView(BootStrapForm):
         label = "密码",
         widget = forms.PasswordInput,
         required = True,
+    )
+
+    code = forms.CharField(
+        label="验证码",
+        widget=forms.TextInput,
+        required=True
     )
 
     def clean_password(self):
@@ -41,6 +50,13 @@ def account_login(request):
         # username = form.cleaned_data.get('username')
         # password = form.cleaned_data.get('password')
 
+        # 验证码校验
+        user_input_code = form.cleaned_data.pop('code')
+        code = request.session.get('image_code',"")
+        if code.upper() != user_input_code.upper():
+            form.add_error("code", "验证码错误")
+            return render(request,'login.html',{'form':form})
+
         admin_object = models.Admin.objects.filter(**form.cleaned_data).first()
         if not admin_object:
             form.add_error("password", "用户名或密码错误")
@@ -53,4 +69,26 @@ def account_login(request):
         return redirect('/admin/list')
 
     return render(request, 'login.html', {'form': form})
+
+
+def account_logout(request):
+    """注销"""
+    request.session.clear()
+    return redirect('/login/')
+
+def image_code(request):
+    '''生成图片验证码'''
+
+    #调用pillow对象，生成图片和验证码
+    img ,code_string = check_code()
+    print(code_string)
+
+    # 写入到自己的session中
+    request.session['image_code'] = code_string
+    # 给session设置60秒超时
+    request.session.set_expiry(60)
+
+    stream = BytesIO()
+    img.save(stream, format='png')
+    return HttpResponse(stream.getvalue())
 
