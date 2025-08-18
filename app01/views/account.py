@@ -46,6 +46,10 @@ def account_login(request):
             form.add_error("password", "用户名或密码错误")
             return render(request,'login.html',{'form':form})
 
+        # 网站生成随机字符串，写到用户浏览器的cookie中，再写入到session里
+        request.session['info'] = {'id': admin_object.id,'name':admin_object.username}
+        # session可以保存7天
+        request.session.set_expiry(60 * 60 * 24 * 7)
         return redirect('/admin/list')
 
     return render(request, 'login.html', {'form': form})
