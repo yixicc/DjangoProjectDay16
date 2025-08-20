@@ -181,3 +181,12 @@ class AdminResetModelForm(BootStrapModelForm):
         if password != confirm_password:
             raise forms.ValidationError("密码不一致")
         return confirm_password
+
+
+class TaskModelForm(BootStrapModelForm):
+    class Meta:
+        model = models.Task
+        fields = "__all__"
+        widgets = {
+            'detail':forms.TextInput
+        }
